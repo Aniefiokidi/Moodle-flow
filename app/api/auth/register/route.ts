@@ -87,8 +87,24 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     console.error("Registration error:", error)
+    
+    // More specific error handling
+    if (error instanceof Error) {
+      console.error("Error message:", error.message)
+      console.error("Error stack:", error.stack)
+    }
+    
+    // Check if it's a Prisma error
+    if (error && typeof error === 'object' && 'code' in error) {
+      console.error("Prisma error code:", (error as any).code)
+      console.error("Prisma error meta:", (error as any).meta)
+    }
+    
     return NextResponse.json(
-      { error: "Internal server error" },
+      { 
+        error: "Internal server error",
+        details: process.env.NODE_ENV === 'development' ? error?.toString() : undefined
+      },
       { status: 500 }
     )
   }
