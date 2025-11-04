@@ -327,7 +327,7 @@ export default function AdminUsers() {
                     <TableCell className="font-medium">{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                      <Badge className={getRoleBadgeColor(user.role)}>
+                      <Badge className={getRoleBadge(user.role)}>
                         <span className="flex items-center space-x-1">
                           {getRoleIcon(user.role)}
                           <span>{user.role}</span>
