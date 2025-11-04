@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -12,33 +13,47 @@ const errorMap = {
   Default: 'An unexpected error occurred.',
 }
 
-export default function AuthError() {
+function ErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams?.get('error') as keyof typeof errorMap || 'Default'
 
   return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-center text-red-600">Authentication Error</CardTitle>
+        <CardDescription className="text-center">
+          {errorMap[error] || errorMap.Default}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-gray-600 text-center">
+          {error && `Error: ${error}`}
+        </p>
+      </CardContent>
+      <CardFooter className="flex justify-center space-x-4">
+        <Button asChild variant="outline">
+          <Link href="/auth/signin">Try Again</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/">Go Home</Link>
+        </Button>
+      </CardFooter>
+    </Card>
+  )
+}
+
+export default function AuthError() {
+  return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-red-600">Authentication Error</CardTitle>
-          <CardDescription className="text-center">
-            {errorMap[error] || errorMap.Default}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-600 text-center">
-            {error && `Error: ${error}`}
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-center space-x-4">
-          <Button asChild variant="outline">
-            <Link href="/auth/signin">Try Again</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/">Go Home</Link>
-          </Button>
-        </CardFooter>
-      </Card>
+      <Suspense fallback={
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-red-600">Loading...</CardTitle>
+          </CardHeader>
+        </Card>
+      }>
+        <ErrorContent />
+      </Suspense>
     </div>
   )
 }
