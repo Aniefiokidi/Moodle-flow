@@ -1,4 +1,9 @@
 import "dotenv/config";
+
+// Set a default DATABASE_URL if not provided (for build time)
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "file:./dev.db";
+}
 import { defineConfig, env } from "prisma/config";
 
 export default defineConfig({
